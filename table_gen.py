@@ -5,6 +5,10 @@ from datetime import datetime
 
 # Written with assistance from ChatGPT
 
+# Get the API key from the environment variable
+API_KEY = os.environ.get('ZOTERO_API_KEY')
+LIBRARY_ID = "2810748"
+LIBRARY_TYPE = "group"
 REPLACE_TOKEN = '<!-- TABLE_CONTENT -->'
 
 def process_input(d: dict) -> dict:
@@ -28,23 +32,27 @@ def process_input(d: dict) -> dict:
         if not date_str:
             return ''
 
-        # Parse the ISO date string
-        iso_date = datetime.fromisoformat(date_str)
-        # Format it as YYYY-MM-DD
-        formatted_date = iso_date.strftime('%Y-%m-%d')
+        try:
+            # Parse the ISO date string
+            iso_date = datetime.fromisoformat(date_str.rstrip('Z'))
+            # Format it as YYYY-MM-DD
+            formatted_date = iso_date.strftime('%Y-%m-%d')
+        except ValueError:
+            # If the date string is not in ISO format, just return it
+            # Could be just year
+            formatted_date = date_str
+
         return formatted_date
 
     data = d['data']
     return {
         'Title': f"<a href=\"{data['url']}\">{data['title']}</a>",
-        'Creators': process_creators(data['creators']),
-        'Date': reformat_date(data['date']),
+        'Creators': process_creators(data.get('creators', [])),
+        'Date': reformat_date(data.get('date', '')),
     }
 
-# Get the API key from the environment variable
-api_key = os.environ.get('ZOTERO_API_KEY')
-zot = zotero.Zotero("2810748", "group", api_key)
-items = zot.top(limit=10)
+zot = zotero.Zotero(LIBRARY_ID, LIBRARY_TYPE, API_KEY)
+items = zot.top()
 # we've retrieved the latest five top-level items in our library
 # we can print each item's item type and ID
 input_list = [process_input(e) for e in items]
@@ -53,17 +61,21 @@ input_list = [process_input(e) for e in items]
 table_lines = []
 # Create the table header
 header = input_list[0].keys()
+table_lines.append('<thead>')
 table_lines.append('<tr>')
 for item in header:
-    table_lines.append(f'<th>{item}</th>')
+    table_lines.append(f'<th class="column-{item}">{item}</th>')
 table_lines.append('</tr>')
+table_lines.append('</thead>')
 
 # Create table rows for each input element
+table_lines.append('<tbody id="tableBody">')
 for item in input_list:
     table_lines.append('<tr>')
     for key, value in item.items():
-        table_lines.append(f'<td>{value}</td>')
+        table_lines.append(f'<td class="column-{key}">{value}</td>')
     table_lines.append('</tr>')
+table_lines.append('</tbody>')
 
 # Read the template file into list of lines
 with open('template.html', 'r') as f:
@@ -73,6 +85,8 @@ with open('template.html', 'r') as f:
 with open('index.html', 'w') as f:
     for line in template_lines:
         if line.strip() == ('%s' % REPLACE_TOKEN):
+            f.write(line.rstrip().replace(REPLACE_TOKEN, '')) # Write the indentation
             f.writelines(table_lines)
+            f.write('\n')
         else:
             f.write(line)
