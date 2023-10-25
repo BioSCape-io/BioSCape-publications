@@ -1,13 +1,13 @@
 name: Update Page
 
 on:
-    workflow_dispatch:  
+    workflow_dispatch:
     push:
         branches:
-        -   main
+        - main
     schedule:
     -   cron: '0 0 * * *'
-    
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -15,10 +15,30 @@ jobs:
     build:
         # The type of runner that the job will run on
         runs-on: ubuntu-latest
-        
+
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
-        -    name: Setup Python
-             uses: actions/setup-python@v4.7.1
-             with:
+        -   name: Setup Python
+            uses: actions/setup-python@v4.7.1
+            with:
                 python-version: '3.10'
+
+        -   name: Install dependencies
+            run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+
+        -   name: Build HTML with table
+            env:
+                ZOTERO_API_KEY: ${{ secrets.ZOTERO_API_KEY }}
+            run: |
+                python build_html.py
+                
+        -   name: Commit and push to page branch
+            run: |
+                git config user.name "GitHub Actions Bot"
+                git config user.email "<>"
+                git checkout --orphan page
+                git add index.html script.js styles.css
+                git commit -m 'Updated Page' || true
+                git push --force origin page
