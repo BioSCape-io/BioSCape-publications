@@ -6,7 +6,8 @@ from datetime import datetime
 # Written with assistance from ChatGPT
 
 # Get the API key from the environment variable
-API_KEY = os.environ.get('ZOTERO_API_KEY')
+# API key seems to be unnecessary for public libraries
+API_KEY = os.environ.get('ZOTERO_API_KEY', "")
 LIBRARY_ID = "2810748"
 LIBRARY_TYPE = "group"
 REPLACE_TOKEN = '<!-- TABLE_CONTENT -->'

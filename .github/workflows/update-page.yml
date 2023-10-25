@@ -32,8 +32,6 @@ jobs:
                 pip install -r requirements.txt
 
         -   name: Build HTML with table
-            env:
-                ZOTERO_API_KEY: ${{ secrets.ZOTERO_API_KEY }}
             run: |
                 python build_html.py
                 
