@@ -40,5 +40,5 @@ jobs:
                 git config user.email "<>"
                 git checkout --orphan page
                 git add index.html script.js styles.css
-                git commit -m 'Updated Page' || true
+                git commit index.html script.js styles.css -m 'Updated Page' || true
                 git push --force origin page
