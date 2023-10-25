@@ -10,7 +10,14 @@ from datetime import datetime
 API_KEY = os.environ.get('ZOTERO_API_KEY', "")
 LIBRARY_ID = "2810748"
 LIBRARY_TYPE = "group"
+TARGET_COLLECTION = "U4SW8TCS"
 REPLACE_TOKEN = '<!-- TABLE_CONTENT -->'
+
+def filter_input(d: dict) -> bool:
+    if TARGET_COLLECTION not in d.get('data', {}).get('collections', []):
+        return False
+
+    return True
 
 def process_input(d: dict) -> dict:
     def process_creators(creators: list) -> str:
@@ -56,7 +63,11 @@ zot = zotero.Zotero(LIBRARY_ID, LIBRARY_TYPE, API_KEY)
 items = zot.top()
 # we've retrieved the latest five top-level items in our library
 # we can print each item's item type and ID
-input_list = [process_input(e) for e in items]
+filtered_items = []
+for item in items:
+    if filter_input(item):
+        filtered_items.append(item)
+input_list = [process_input(e) for e in filtered_items]
 
 # Store lines of HTML table in a list
 table_lines = []
