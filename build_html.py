@@ -11,6 +11,7 @@ API_KEY = os.environ.get('ZOTERO_API_KEY', "")
 LIBRARY_ID = "2810748"
 LIBRARY_TYPE = "group"
 TARGET_COLLECTION = "U4SW8TCS"
+AUTHOR_COUNT_THRESHOLD = 3
 REPLACE_TOKEN = '<!-- TABLE_CONTENT -->'
 
 def filter_input(d: dict) -> bool:
@@ -26,6 +27,7 @@ def process_input(d: dict) -> dict:
             first_name = c.get('firstName', None)
             last_name = c.get('lastName', None)
             name = c.get('name', None)
+
             if first_name and last_name:
                 formatted.append(f"{first_name} {last_name}")
             elif first_name:
@@ -34,7 +36,11 @@ def process_input(d: dict) -> dict:
                 formatted.append(last_name)
             elif name:
                 formatted.append(name)
-        return ', '.join(formatted)
+
+        if len(formatted) < AUTHOR_COUNT_THRESHOLD:
+            return ', '.join(formatted)
+        else:
+            return f"<span title=\"{', '.join(formatted)}\">{formatted[0]} et al.</span>"
 
     def reformat_date(date_str: str) -> str:
         if not date_str:
