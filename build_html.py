@@ -61,6 +61,7 @@ def process_input(d: dict) -> dict:
     data = d['data']
     return {
         'Title': f"<a href=\"{data['url']}\">{data['title']}</a>",
+        'Journal': data.get('publicationTitle', ''),
         'Creators': process_creators(data.get('creators', [])),
         'Date': reformat_date(data.get('date', '')),
     }
