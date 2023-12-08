@@ -1,1 +1,5 @@
-# BioSCape-publications
+# BioSCape publications
+
+This repository has a short python script that scrapes publications from the [https://www.zotero.org/groups/2810748/bioscape/collections/U4SW8TCS](BioSCape Zotero group) and publishes it as a plain HTML website for embedding on the bioscape.io website.
+
+It automatically updates once per day.
