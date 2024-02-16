@@ -14,12 +14,6 @@ TARGET_COLLECTION = "U4SW8TCS"
 AUTHOR_COUNT_THRESHOLD = 3
 REPLACE_TOKEN = '<!-- TABLE_CONTENT -->'
 
-def filter_input(d: dict) -> bool:
-    if TARGET_COLLECTION not in d.get('data', {}).get('collections', []):
-        return False
-
-    return True
-
 def process_input(d: dict) -> dict:
     def process_creators(creators: list) -> str:
         formatted = []
@@ -67,14 +61,8 @@ def process_input(d: dict) -> dict:
     }
 
 zot = zotero.Zotero(LIBRARY_ID, LIBRARY_TYPE, API_KEY)
-items = zot.top()
-# we've retrieved the latest five top-level items in our library
-# we can print each item's item type and ID
-filtered_items = []
-for item in items:
-    if filter_input(item):
-        filtered_items.append(item)
-input_list = [process_input(e) for e in filtered_items]
+items = zot.collection_items_top(TARGET_COLLECTION)
+input_list = [process_input(e) for e in items]
 
 # Store lines of HTML table in a list
 table_lines = []
