@@ -20,6 +20,19 @@ def filter_input(d: dict) -> bool:
 
     return True
 
+def fix_word_spaces(s: str) -> str:
+    words = []
+    last_i = 0
+    for i, c in enumerate(s):
+        if c.isupper():
+            words.append(s[last_i:i])
+            last_i = i
+
+    if last_i < len(s):
+        words.append(s[last_i:])
+
+    return ' '.join([w.capitalize() for w in words])
+
 def process_input(d: dict) -> dict:
     def process_creators(creators: list) -> str:
         formatted = []
@@ -58,10 +71,26 @@ def process_input(d: dict) -> dict:
 
         return formatted_date
 
+    def get_source(data: dict) -> str:
+        if data["itemType"] == "journalArticle":
+            return data.get('publicationTitle', '')
+        elif data["itemType"] == "conferencePaper":
+            a = data.get('publicationTitle', '')
+            # Some entries have conferenceName instead of publicationTitle
+            if len(a) == 0:
+                a = data.get('conferenceName', '')
+            # Some entries have proceedingsTitle instead
+            if len(a) == 0:
+                a = data.get('proceedingsTitle', '')
+            return a
+        else:
+            return ''
+
     data = d['data']
     return {
         'Title': f"<a href=\"{data['url']}\">{data['title']}</a>",
-        'Journal': data.get('publicationTitle', ''),
+        'Item Type': fix_word_spaces(data['itemType']),
+        'Journal/Conference/Source': get_source(data),
         'Creators': process_creators(data.get('creators', [])),
         'Date': reformat_date(data.get('date', '')),
     }
