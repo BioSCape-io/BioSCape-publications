@@ -59,8 +59,11 @@ def process_input(d: dict) -> dict:
         return formatted_date
 
     data = d['data']
+    title = data.get('title', '')
+    url = data.get('url', '')
+
     return {
-        'Title': f"<a href=\"{data['url']}\">{data['title']}</a>",
+        'Title': f'<a target="_blank" rel="noopener noreferrer" href=\"{url}\">{title}</a>' if len(url) > 0 else title,
         'Journal': data.get('publicationTitle', ''),
         'Creators': process_creators(data.get('creators', [])),
         'Date': reformat_date(data.get('date', '')),
