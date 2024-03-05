@@ -14,12 +14,6 @@ TARGET_COLLECTION = "U4SW8TCS"
 AUTHOR_COUNT_THRESHOLD = 3
 REPLACE_TOKEN = '<!-- TABLE_CONTENT -->'
 
-def filter_input(d: dict) -> bool:
-    if TARGET_COLLECTION not in d.get('data', {}).get('collections', []):
-        return False
-
-    return True
-
 def fix_word_spaces(s: str) -> str:
     words = []
     last_i = 0
@@ -87,8 +81,11 @@ def process_input(d: dict) -> dict:
             return ''
 
     data = d['data']
+    title = data.get('title', '')
+    url = data.get('url', '')
+
     return {
-        'Title': f"<a href=\"{data['url']}\">{data['title']}</a>",
+        'Title': f'<a target="_blank" rel="noopener noreferrer" href=\"{url}\">{title}</a>' if len(url) > 0 else title,
         'Item Type': fix_word_spaces(data['itemType']),
         'Journal/Conference/Source': get_source(data),
         'Creators': process_creators(data.get('creators', [])),
@@ -96,14 +93,8 @@ def process_input(d: dict) -> dict:
     }
 
 zot = zotero.Zotero(LIBRARY_ID, LIBRARY_TYPE, API_KEY)
-items = zot.top()
-# we've retrieved the latest five top-level items in our library
-# we can print each item's item type and ID
-filtered_items = []
-for item in items:
-    if filter_input(item):
-        filtered_items.append(item)
-input_list = [process_input(e) for e in filtered_items]
+items = zot.collection_items_top(TARGET_COLLECTION)
+input_list = [process_input(e) for e in items]
 
 # Store lines of HTML table in a list
 table_lines = []
