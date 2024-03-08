@@ -14,6 +14,19 @@ TARGET_COLLECTION = "U4SW8TCS"
 AUTHOR_COUNT_THRESHOLD = 3
 REPLACE_TOKEN = '<!-- TABLE_CONTENT -->'
 
+def fix_word_spaces(s: str) -> str:
+    words = []
+    last_i = 0
+    for i, c in enumerate(s):
+        if c.isupper():
+            words.append(s[last_i:i])
+            last_i = i
+
+    if last_i < len(s):
+        words.append(s[last_i:])
+
+    return ' '.join([w.capitalize() for w in words])
+
 def process_input(d: dict) -> dict:
     def process_creators(creators: list) -> str:
         formatted = []
@@ -52,13 +65,29 @@ def process_input(d: dict) -> dict:
 
         return formatted_date
 
+    def get_source(data: dict) -> str:
+        if data["itemType"] == "journalArticle":
+            return data.get('publicationTitle', '')
+        elif data["itemType"] == "conferencePaper":
+            a = data.get('publicationTitle', '')
+            # Some entries have conferenceName instead of publicationTitle
+            if len(a) == 0:
+                a = data.get('conferenceName', '')
+            # Some entries have proceedingsTitle instead
+            if len(a) == 0:
+                a = data.get('proceedingsTitle', '')
+            return a
+        else:
+            return ''
+
     data = d['data']
     title = data.get('title', '')
     url = data.get('url', '')
 
     return {
         'Title': f'<a target="_blank" rel="noopener noreferrer" href=\"{url}\">{title}</a>' if len(url) > 0 else title,
-        'Journal': data.get('publicationTitle', ''),
+        'Item Type': fix_word_spaces(data['itemType']),
+        'Journal/Conference/Source': get_source(data),
         'Creators': process_creators(data.get('creators', [])),
         'Date': reformat_date(data.get('date', '')),
     }
