@@ -76,6 +76,8 @@ def process_input(d: dict) -> dict:
             # Some entries have proceedingsTitle instead
             if len(a) == 0:
                 a = data.get('proceedingsTitle', '')
+            return a
+        elif data["itemType"] == "presentation":
             if len(a) == 0:
                 a = data.get('meetingName', '')
             return a
