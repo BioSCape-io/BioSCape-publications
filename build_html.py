@@ -77,7 +77,7 @@ def process_input(d: dict) -> dict:
             if len(a) == 0:
                 a = data.get('proceedingsTitle', '')
             if len(a) == 0:
-                a = data.get('MeetingName', '')
+                a = data.get('meetingName', '')
             return a
         else:
             return ''
