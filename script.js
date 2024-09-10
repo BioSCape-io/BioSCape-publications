@@ -6,6 +6,7 @@ $(document).ready(function() {
         scrollCollapse: true, // Enable scrollbars when needed
         paging: true, // Disable pagination
         pageLength: 50, //
-        ordering: true, // Disable sorting
+        ordering: true, // Enable sorting
+        order: [[4, 'desc']]
     });
 });

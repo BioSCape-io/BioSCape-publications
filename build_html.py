@@ -1,7 +1,8 @@
 import os
+import re
 
 from pyzotero import zotero
-from datetime import datetime
+import dateparser
 
 # Written with assistance from ChatGPT
 
@@ -53,15 +54,18 @@ def process_input(d: dict) -> dict:
         if not date_str:
             return ''
 
-        try:
-            # Parse the ISO date string
-            iso_date = datetime.fromisoformat(date_str.rstrip('Z'))
-            # Format it as YYYY-MM-DD
-            formatted_date = iso_date.strftime('%Y-%m-%d')
-        except ValueError:
-            # If the date string is not in ISO format, just return it
-            # Could be just year
-            formatted_date = date_str
+        formatted_date = None
+
+        # First try parsing with python built-in datatime parser
+        datetime_obj = dateparser.parse(date_str)
+        if datetime_obj is not None:
+            # Format it as YYYY
+            formatted_date = datetime_obj.strftime('%Y')
+
+        # Backup: just take the 4-digit number
+        if formatted_date is None:
+            formatted_date = re.findall(r"\d{4}", date_str)[0]
+            print(f"Using backup date parsing for {date_str} -> {formatted_date}")
 
         return formatted_date
 
@@ -91,7 +95,7 @@ def process_input(d: dict) -> dict:
         'Item Type': fix_word_spaces(data['itemType']),
         'Journal/Conference/Source': get_source(data),
         'Creators': process_creators(data.get('creators', [])),
-        'Date': reformat_date(data.get('date', '')),
+        'Year': reformat_date(data.get('date', '')),
     }
 
 zot = zotero.Zotero(LIBRARY_ID, LIBRARY_TYPE, API_KEY)
