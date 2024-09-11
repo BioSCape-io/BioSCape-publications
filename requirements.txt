@@ -1,1 +1,2 @@
-pyzotero
+pyzotero~=1.5.16
+dateparser~=1.2.0
