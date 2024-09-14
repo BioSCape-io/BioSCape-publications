@@ -40,6 +40,6 @@ jobs:
                 git config user.name "GitHub Actions Bot"
                 git config user.email "<>"
                 git checkout --orphan page
-                git add index.html script.js styles.css
+                git add -f index.html script.js styles.css
                 git commit index.html script.js styles.css -m 'Updated Page' || true
                 git push --force origin page
