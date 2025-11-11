@@ -83,6 +83,8 @@ def process_input(d: dict) -> dict:
             return a
         elif data["itemType"] == "presentation":
             return data.get('meetingName', '')
+        elif data["itemType"] == "preprint":
+            return data.get('repository', '')
         else:
             return ''
 
