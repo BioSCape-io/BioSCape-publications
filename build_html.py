@@ -100,7 +100,7 @@ def process_input(d: dict) -> dict:
     return {
         'Title': f'<a target="_blank" rel="noopener noreferrer" href=\"{url}\">{title}</a>' if len(url) > 0 else title,
         'Item Type': fix_word_spaces(data['itemType']),
-        'Journal/Conference/Source': get_source(data),
+        'Journal/Conference/Source': f'<i>{get_source(data)}</i>',
         'Creators': process_creators(data.get('creators', [])),
         'Year': reformat_date(data.get('date', '')),
     }
@@ -114,6 +114,10 @@ table_lines = []
 # Create the table header
 header = input_list[0].keys()
 table_lines.append('<thead>')
+table_lines.append('<tr>')
+for item in header:
+    table_lines.append(f'<th class="column-{item}" id="_filter-{item}"></th>')
+table_lines.append('</tr>')
 table_lines.append('<tr>')
 for item in header:
     table_lines.append(f'<th class="column-{item}">{item}</th>')
