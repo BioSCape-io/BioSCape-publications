@@ -5,3 +5,43 @@ body {
 .column-Title {
     width: 50%;
 }
+
+.filter-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.filter-container h5 {
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter-option input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.filter-option label {
+    cursor: pointer;
+    margin: 0;
+}
+
+.filter-buttons {
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+}
