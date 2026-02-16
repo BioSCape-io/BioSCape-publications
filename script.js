@@ -110,7 +110,7 @@ $(document).ready(function() {
 
     // Display total item count
     const totalItems = table.rows().count();
-    $('#itemCountMessage').text('There are currently ' + totalItems + ' items in the bioscape product database. This includes journal articles, presentations, reports, and other scholarly outputs.');
+    $('#itemCountMessage').html('There are currently ' + totalItems + ' items in the BioSCape product database. This includes journal articles, presentations, reports, and other scholarly outputs. Are we missing something?  Please email <a href="mailto:info@bioscape.io">info@bioscape.io</a>.');
 
     // Chart instance
     let publicationChart = null;
