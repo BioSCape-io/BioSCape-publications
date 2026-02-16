@@ -2,7 +2,7 @@ $(document).ready(function() {
     // Initialize DataTables
     const table = $('#publicationTable').DataTable({
         scrollX: false, // Disable horizontal scrolling
-        scrollY: 3000,   // Set a fixed height for vertical scrolling (adjust as needed)
+        scrollY: 6000,   // Set a fixed height for vertical scrolling (adjust as needed)
         scrollCollapse: true, // Enable scrollbars when needed
         paging: true, // Enable pagination
         pageLength: 120, // Number of entries per page
