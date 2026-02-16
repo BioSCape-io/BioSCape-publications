@@ -69,6 +69,7 @@ def process_input(d: dict) -> dict:
 
         return formatted_date
 
+    # map different fields to the 'source' column
     def get_source(data: dict) -> str:
         if data["itemType"] == "journalArticle":
             return data.get('publicationTitle', '')
@@ -87,6 +88,8 @@ def process_input(d: dict) -> dict:
             return data.get('repository', '')
         elif data["itemType"] == "dataset":
             return data.get('repository', '')
+        elif data["itemType"] == "thesis":
+            return data.get('university', '')
         else:
             return ''
 
