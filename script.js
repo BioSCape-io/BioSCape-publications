@@ -93,9 +93,20 @@ $(document).ready(function() {
         }
     );
 
+    // Update button visibility based on filter state
+    function updateButtonVisibility() {
+        // Show "Show All Years" button only if years are filtered
+        if (filterState.minYear !== 2018 || filterState.maxYear !== 2026) {
+            $('#showAllYearsBtn').show();
+        } else {
+            $('#showAllYearsBtn').hide();
+        }
+    }
+
     // Filter table based on current filter state
     function filterTable() {
         table.draw();
+        updateButtonVisibility();
     }
 
     // Populate filters on load
@@ -228,6 +239,7 @@ $(document).ready(function() {
                             // Filter table and update chart
                             filterTable();
                             updateChart();
+                            updateButtonVisibility();
                         }
                     },
                     scales: {
@@ -294,6 +306,9 @@ $(document).ready(function() {
 
     // Initialize chart on page load
     updateChart();
+    
+    // Initialize button visibility
+    updateButtonVisibility();
 
     // Update chart when filters change
     $(document).on('change', '.item-type-filter', function() {
