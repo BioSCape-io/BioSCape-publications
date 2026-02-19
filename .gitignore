@@ -1,1 +1,4 @@
 .venv
+topic_analysis/
+*.pyc
+__pycache__/
