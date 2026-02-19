@@ -106,19 +106,39 @@ def process_input(d: dict) -> dict:
     }
 
 zot = zotero.Zotero(LIBRARY_ID, LIBRARY_TYPE, API_KEY)
-items = zot.collection_items_top(TARGET_COLLECTION)
+
+def fetch_all_collection_items_top(collection_key: str, page_size: int = 100) -> list:
+    all_items = []
+    start = 0
+
+    while True:
+        page = zot.collection_items_top(collection_key, limit=page_size, start=start)
+        if not page:
+            break
+
+        all_items.extend(page)
+
+        if len(page) < page_size:
+            break
+
+        start += page_size
+
+    return all_items
+
+items = fetch_all_collection_items_top(TARGET_COLLECTION)
 input_list = [process_input(e) for e in items]
 
 # Store lines of HTML table in a list
 table_lines = []
 # Create the table header
-header = input_list[0].keys()
-table_lines.append('<thead>')
-table_lines.append('<tr>')
-for item in header:
-    table_lines.append(f'<th class="column-{item}">{item}</th>')
-table_lines.append('</tr>')
-table_lines.append('</thead>')
+if input_list:
+    header = input_list[0].keys()
+    table_lines.append('<thead>')
+    table_lines.append('<tr>')
+    for item in header:
+        table_lines.append(f'<th class="column-{item}">{item}</th>')
+    table_lines.append('</tr>')
+    table_lines.append('</thead>')
 
 # Create table rows for each input element
 table_lines.append('<tbody id="tableBody">')
