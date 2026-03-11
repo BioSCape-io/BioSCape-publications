@@ -121,7 +121,30 @@ $(document).ready(function() {
 
     // Display total item count
     const totalItems = table.rows().count();
-    $('#itemCountMessage').html('There are currently ' + totalItems + ' items in the BioSCape product database. This includes journal articles, presentations, reports, and other scholarly outputs. Are we missing something?  Please email <a href="mailto:info@bioscape.io">info@bioscape.io</a>.');
+
+    // Helper to pluralize common item types (fallback: add 's')
+    function pluralize(type, count) {
+        const mapping = {
+            'Thesis': 'Theses',
+            'Journal Article': 'Journal Articles',
+            'Conference Paper': 'Conference Papers',
+            'Presentation': 'Presentations',
+            'Computer Program': 'Computer Programs',
+            'Dataset': 'Datasets',
+            'Preprint': 'Preprints',
+            'Report': 'Reports'
+        };
+        if (mapping[type]) return mapping[type];
+        return count === 1 ? type : type + 's';
+    }
+
+    // Build a per-type counts list for the message
+    const itemTypesWithCounts = getUniqueItemTypesWithCounts();
+    const countsList = itemTypesWithCounts
+        .map(item => item.count + ' ' + pluralize(item.type, item.count))
+        .join(', ');
+
+    $('#itemCountMessage').html('There are currently ' + totalItems + ' items in the BioSCape product database (' + countsList + '). Are we missing something? Please email <a href="mailto:info@bioscape.io">info@bioscape.io</a>.');
 
     // Chart instance
     let publicationChart = null;
