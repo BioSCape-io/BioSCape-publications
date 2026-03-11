@@ -144,7 +144,7 @@ $(document).ready(function() {
         .map(item => item.count + ' ' + pluralize(item.type, item.count))
         .join(', ');
 
-    $('#itemCountMessage').html('There are currently ' + totalItems + ' items in the BioSCape product database (' + countsList + '). Are we missing something? Please email <a href="mailto:info@bioscape.io">info@bioscape.io</a>.');
+    $('#itemCountMessage').html('To date, BioSCape has produced ' + totalItems + ' scientific outputs, including ' + countsList + '.');
 
     // Chart instance
     let publicationChart = null;
