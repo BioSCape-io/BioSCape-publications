@@ -151,3 +151,204 @@ body {
     font-weight: 500;
     color: #333;
 }
+
+/* ------------------------------------------------------------------ */
+/* Stats dashboard                                                    */
+/* ------------------------------------------------------------------ */
+
+.stats-dashboard {
+    margin: 20px 0 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.stats-dashboard h5,
+.stats-dashboard h6 {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #003295;
+}
+
+.stats-topics-title {
+    margin-top: 30px;
+}
+
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 15px 0 20px;
+}
+
+.stats-card {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 14px 16px;
+    text-align: center;
+}
+
+.stats-card-highlight {
+    background: linear-gradient(135deg, #003295 0%, #3672bf 100%);
+    color: #fff;
+    border-color: #003295;
+}
+
+.stats-card-highlight .stats-label {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.stats-value {
+    font-size: 1.8em;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.stats-label {
+    font-size: 0.82em;
+    color: #555;
+    margin-top: 4px;
+    line-height: 1.3;
+}
+
+.stats-charts {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+    .stats-charts {
+        grid-template-columns: 1fr;
+    }
+}
+
+.stats-chart-block {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.stats-chart-block canvas {
+    max-height: 240px;
+}
+
+.stats-full-width {
+    margin-top: 20px;
+}
+
+.stats-full-width canvas {
+    max-height: 260px;
+}
+
+.chart-note {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+}
+
+.table-disclaimer {
+    margin: 20px 0 8px;
+    padding: 10px 12px;
+    background: #fff8e1;
+    border-left: 3px solid #f5b301;
+    border-radius: 3px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+}
+
+.stats-topic-charts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+    .stats-topic-charts {
+        grid-template-columns: 1fr;
+    }
+}
+
+.stats-topic-block {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+}
+
+.stats-topic-block canvas {
+    max-height: 200px;
+}
+
+.topic-title {
+    font-weight: 600;
+    color: #003295;
+    margin-bottom: 6px;
+    font-size: 0.95em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Topic badges (in the DataTable rows)                               */
+/* ------------------------------------------------------------------ */
+
+.topic-badges {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+}
+
+.topic-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #fff;
+    background: #6c757d;
+    white-space: nowrap;
+}
+
+.topic-empty {
+    background: transparent;
+    color: #adb5bd;
+    font-weight: 400;
+}
+
+/* Ecosystem palette */
+.topic-ecosystem-terrestrial       { background: #588157; }
+.topic-ecosystem-freshwater        { background: #00b4d8; color: #003; }
+.topic-ecosystem-estuarine-coastal { background: #2a9d8f; }
+.topic-ecosystem-marine            { background: #0077b6; }
+
+/* Taxa palette */
+.topic-taxa-plants-vegetation         { background: #386641; }
+.topic-taxa-phytoplankton             { background: #0096c7; }
+.topic-taxa-vocal-fauna               { background: #ae5c1c; }
+
+/* Method palette */
+.topic-method-field-observation      { background: #023e8a; }
+.topic-method-remote-sensing         { background: #c1121f; }
+.topic-method-machine-learning       { background: #ff8500; }
+.topic-method-molecular-edna         { background: #6d597a; }
+.topic-method-statistical-modeling   { background: #e9b306; color: #212529; }
+.topic-method-physics-based-modeling { background: #264653; }
+.topic-method-perspective-synthesis  { background: #6c757d; }
+
+/* Compact columns for topic badges */
+.column-Ecosystem,
+.column-Taxa,
+.column-Method {
+    width: 1%;
+    white-space: nowrap;
+    text-align: center;
+}

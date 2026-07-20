@@ -12,6 +12,82 @@
 <body>
 <div>
     <div id="itemCountMessage" class="item-count-message"></div>
+
+    <section id="statsDashboard" class="stats-dashboard">
+        <h5>BioSCape at a glance</h5>
+        <p class="chart-subtitle">
+            BioSCape brings together an international team from the United States and South Africa.
+            The metrics below cover peer-reviewed papers and datasets with DOIs, where per-author
+            affiliations are available via OpenAlex.
+        </p>
+
+        <div class="stats-cards">
+            <div class="stats-card">
+                <div class="stats-value" id="statTotalOutputs">–</div>
+                <div class="stats-label">Total outputs</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-value" id="statOutputsWithDoi">–</div>
+                <div class="stats-label">With DOI (papers &amp; datasets)</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-value" id="statUniqueAuthors">–</div>
+                <div class="stats-label">Unique contributing authors</div>
+            </div>
+            <div class="stats-card stats-card-highlight">
+                <div class="stats-value" id="statUsSaPct">–</div>
+                <div class="stats-label">US &ndash; South Africa co-authored</div>
+            </div>
+        </div>
+
+        <div class="stats-charts">
+            <div class="stats-chart-block">
+                <h6>Author affiliations by country (unique authors)</h6>
+                <canvas id="countryChart"></canvas>
+                <p class="chart-note" id="countryChartNote"></p>
+            </div>
+            <div class="stats-chart-block">
+                <h6>DOI'd outputs by collaboration type</h6>
+                <canvas id="collabChart"></canvas>
+            </div>
+        </div>
+
+        <div class="stats-chart-block stats-full-width">
+            <h6>Authorships by role &mdash; US, South Africa, rest of world</h6>
+            <p class="chart-note">
+                Every author on every DOI'd output counted once per country of institutional
+                affiliation. Even though US-affiliated authorships outnumber ZA roughly 2&times;,
+                first- and last-author positions (the conventional lead and senior-PI roles) are
+                more evenly shared.
+            </p>
+            <canvas id="rolesByGroupChart"></canvas>
+        </div>
+
+
+        <h6 class="stats-topics-title">Topics represented across BioSCape outputs</h6>
+        <p class="chart-subtitle">
+            Each item with an abstract is classified across three dimensions using
+            semantic similarity. The donuts below show the primary category per item,
+            so slice totals equal the number of classified items. The table cells may
+            display more than one badge when a paper strongly matches multiple categories
+            within a dimension.
+        </p>
+        <div class="stats-topic-charts">
+            <div class="stats-topic-block">
+                <div class="topic-title">Ecosystem</div>
+                <canvas id="ecosystemChart"></canvas>
+            </div>
+            <div class="stats-topic-block">
+                <div class="topic-title">Taxa</div>
+                <canvas id="taxaChart"></canvas>
+            </div>
+            <div class="stats-topic-block">
+                <div class="topic-title">Method</div>
+                <canvas id="methodChart"></canvas>
+            </div>
+        </div>
+    </section>
+
     <div id="chartContainer" class="chart-container">
         <h5>Outputs per Year</h5>
         <p class="chart-subtitle">Click on legend items to filter by item type. Click on a single year to filter items by year.</p>
@@ -20,10 +96,17 @@
             <button id="showAllYearsBtn" class="btn btn-sm btn-outline-primary">Show All Years</button>
         </div>
     </div>
+    <p class="table-disclaimer">
+        <strong>Note:</strong> the <em>Ecosystem</em>, <em>Taxa</em>, and <em>Method</em> tags
+        were generated automatically from titles and abstracts using a semantic-similarity
+        classifier and may contain errors. Please refer to each publication for authoritative
+        details.
+    </p>
     <table id="publicationTable" class="table table-striped table-bordered">
         <!-- TABLE_CONTENT -->
-        <script src="script.js"></script>
     </table>
 </div>
+<script>window.BIOSCAPE_STATS = <!-- STATS_JSON -->;</script>
+<script src="script.js"></script>
 </body>
 </html>

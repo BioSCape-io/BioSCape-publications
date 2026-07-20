@@ -1,4 +1,275 @@
+// ----------------------------------------------------------------------- //
+// Stats dashboard rendering                                               //
+// ----------------------------------------------------------------------- //
+
+// Human-friendly country names for the most common country codes we see;
+// unknown codes fall through to the raw code.
+const COUNTRY_NAMES = {
+    US: 'United States',
+    ZA: 'South Africa',
+    GB: 'United Kingdom',
+    DE: 'Germany',
+    NL: 'Netherlands',
+    CA: 'Canada',
+    AU: 'Australia',
+    FR: 'France',
+    CH: 'Switzerland',
+    ES: 'Spain',
+    IT: 'Italy',
+    BR: 'Brazil',
+    NO: 'Norway',
+    SE: 'Sweden',
+    IE: 'Ireland',
+    JP: 'Japan',
+    IN: 'India',
+    KE: 'Kenya',
+    NG: 'Nigeria',
+    NZ: 'New Zealand',
+    AT: 'Austria',
+    BE: 'Belgium',
+    DK: 'Denmark',
+    FI: 'Finland',
+    PT: 'Portugal',
+    MX: 'Mexico',
+    CN: 'China',
+    MZ: 'Mozambique',
+    BW: 'Botswana',
+    NA: 'Namibia',
+    ZW: 'Zimbabwe'
+};
+
+function countryLabel(code) {
+    return COUNTRY_NAMES[code] || code;
+}
+
+// Color palettes aligned with styles.css topic-badge colors.
+const TOPIC_COLORS = {
+    ecosystem: {
+        'Terrestrial': '#588157',
+        'Freshwater': '#00b4d8',
+        'Estuarine/Coastal': '#2a9d8f',
+        'Marine': '#0077b6'
+    },
+    taxa: {
+        'Plants & vegetation': '#386641',
+        'Phytoplankton': '#0096c7',
+        'Vocal fauna': '#ae5c1c'
+    },
+    method: {
+        'Field observation': '#023e8a',
+        'Remote sensing': '#c1121f',
+        'Machine learning': '#ff8500',
+        'Molecular / eDNA': '#6d597a',
+        'Statistical modeling': '#e9b306',
+        'Physics-based modeling': '#264653',
+        'Perspective & synthesis': '#6c757d'
+    }
+};
+
+function renderStatsDashboard(stats) {
+    if (!stats) {
+        return;
+    }
+
+    // Top metric cards.
+    document.getElementById('statTotalOutputs').textContent =
+        stats.total_outputs.toLocaleString();
+    document.getElementById('statOutputsWithDoi').textContent =
+        stats.outputs_with_doi.toLocaleString();
+    document.getElementById('statUniqueAuthors').textContent =
+        stats.unique_authors.toLocaleString();
+    document.getElementById('statUsSaPct').textContent =
+        stats.us_sa_collab_pct.toFixed(1) + '%';
+
+    // Country breakdown horizontal bar chart. Highlight US and ZA.
+    const countries = (stats.country_breakdown || []).slice(0, 12);
+    const countryNote = document.getElementById('countryChartNote');
+    if (countries.length === 0) {
+        countryNote.textContent = 'Author affiliation data not yet available.';
+    } else {
+        const total = (stats.country_breakdown || [])
+            .reduce((sum, c) => sum + c.count, 0);
+        countryNote.textContent =
+            'Distinct authors per country of institutional affiliation ' +
+            '(from ' + stats.outputs_with_doi + ' outputs with DOIs). ' +
+            'An author with affiliations in multiple countries is counted once per country.';
+        const ctx = document.getElementById('countryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: countries.map(c => countryLabel(c.country)),
+                datasets: [{
+                    label: 'Unique authors',
+                    data: countries.map(c => c.count),
+                    backgroundColor: countries.map(c => {
+                        if (c.country === 'US') return '#0a3d91';
+                        if (c.country === 'ZA') return '#007a3d';
+                        return '#6c757d';
+                    })
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const pct = total ? (100 * ctx.parsed.x / total).toFixed(1) : '0.0';
+                                return ctx.parsed.x + ' authors (' + pct + '% of tagged authorships)';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { beginAtZero: true, title: { display: true, text: 'Distinct authors' } },
+                    y: { ticks: { autoSkip: false } }
+                }
+            }
+        });
+    }
+
+    // Collaboration donut.
+    const collabData = [
+        { label: 'US–South Africa co-authored', value: stats.us_sa_collab_papers, color: '#e63946' },
+        { label: 'US only', value: stats.us_only_papers, color: '#0a3d91' },
+        { label: 'South Africa only', value: stats.sa_only_papers, color: '#007a3d' },
+        { label: 'Other international', value: stats.international_other_papers, color: '#6c757d' }
+    ].filter(d => d.value > 0);
+    if (collabData.length > 0) {
+        const ctx = document.getElementById('collabChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: collabData.map(d => d.label),
+                datasets: [{
+                    data: collabData.map(d => d.value),
+                    backgroundColor: collabData.map(d => d.color)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const total = ctx.dataset.data.reduce((s, v) => s + v, 0);
+                                const pct = total ? (100 * ctx.parsed / total).toFixed(1) : '0.0';
+                                return ctx.label + ': ' + ctx.parsed + ' (' + pct + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Authorships by group × role stacked bar.
+    const roleData = stats.authorships_by_group_role;
+    const rolesCanvas = document.getElementById('rolesByGroupChart');
+    if (roleData && roleData.groups && rolesCanvas) {
+        const roleColors = {
+            first: '#003295',
+            last: '#e63946',
+            middle: '#adb5bd'
+        };
+        const roleLabels = { first: 'First author', last: 'Last author', middle: 'Middle author' };
+        const datasets = (roleData.roles || []).map(function(role) {
+            return {
+                label: roleLabels[role] || role,
+                data: roleData.groups.map(function(group) {
+                    return (roleData.counts[group] || [])[roleData.roles.indexOf(role)] || 0;
+                }),
+                backgroundColor: roleColors[role] || '#6c757d'
+            };
+        });
+        new Chart(rolesCanvas.getContext('2d'), {
+            type: 'bar',
+            data: { labels: roleData.groups, datasets: datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const columnTotal = ctx.chart.data.datasets
+                                    .reduce(function(s, ds) { return s + (ds.data[ctx.dataIndex] || 0); }, 0);
+                                const pct = columnTotal
+                                    ? (100 * ctx.parsed.y / columnTotal).toFixed(1)
+                                    : '0.0';
+                                return ctx.dataset.label + ': ' + ctx.parsed.y +
+                                    ' (' + pct + '% of ' + ctx.label + ')';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { stacked: true },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: { display: true, text: 'Authorships' }
+                    }
+                }
+            }
+        });
+    }
+
+    // Topic distribution donuts.
+    const topicMounts = {
+        ecosystem: 'ecosystemChart',
+        taxa: 'taxaChart',
+        method: 'methodChart'
+    };
+    const dist = stats.topic_distribution || {};
+    Object.keys(topicMounts).forEach(function(dim) {
+        const canvasId = topicMounts[dim];
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const entries = (dist[dim] || []).filter(e => e.count > 0);
+        if (entries.length === 0) return;
+        const palette = TOPIC_COLORS[dim] || {};
+        new Chart(canvas.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: entries.map(e => e.category),
+                datasets: [{
+                    data: entries.map(e => e.count),
+                    backgroundColor: entries.map(e => palette[e.category] || '#6c757d')
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const total = ctx.dataset.data.reduce((s, v) => s + v, 0);
+                                const pct = total ? (100 * ctx.parsed / total).toFixed(1) : '0.0';
+                                return ctx.label + ': ' + ctx.parsed + ' (' + pct + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+}
+
 $(document).ready(function() {
+    // ---------------------------------------------------------------- //
+    // Stats dashboard                                                  //
+    // ---------------------------------------------------------------- //
+    renderStatsDashboard(window.BIOSCAPE_STATS || null);
+
     // Initialize DataTables
     const table = $('#publicationTable').DataTable({
         scrollX: false, // Disable horizontal scrolling

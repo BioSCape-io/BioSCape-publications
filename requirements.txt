@@ -1,2 +1,7 @@
 pyzotero~=1.5.16
 dateparser~=1.2.0
+pandas>=2.0
+requests>=2.31
+sentence-transformers>=2.2
+scikit-learn>=1.3
+plotly>=5.18

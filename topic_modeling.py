@@ -123,79 +123,95 @@ def classify_documents_by_semantic_similarity(df):
     # Define dimension categories with rich descriptions
     dimensions = {
         'ecosystem': {
-            'Marine': """
-                Marine and ocean ecosystems including coastal waters, seawater environments, 
-                phytoplankton communities, kelp forests, coral reefs, pelagic zones, benthic 
-                habitats, intertidal areas, and offshore environments. Studies of saltwater 
-                biodiversity, marine organisms, ocean processes, and coastal ecology.
+            'Terrestrial': """
+                Fynbos shrublands, afromontane forests, savannas, woodlands, grasslands,
+                and upland habitats of the Greater Cape Floristic Region. Studies of
+                terrestrial vegetation communities, tree canopies, plant traits, fire
+                regimes, post-fire succession, invasive alien plants, and other land-based
+                ecology on the continent.
             """,
             'Freshwater': """
-                Freshwater ecosystems including rivers, streams, lakes, ponds, wetlands, 
-                riparian zones, floodplains, and inland water bodies. Studies of freshwater 
-                aquatic organisms, river ecology, lake systems, wetland habitats, and 
-                inland water quality and biodiversity.
+                Inland freshwater ecosystems including rivers, streams, catchments, lakes,
+                dams, groundwater-dependent seep wetlands, riparian zones, and floodplains
+                such as the Berg, Eerste, and Nuwejaars catchments. Studies of freshwater
+                aquatic ecology, water quality, and inland wetland vegetation.
             """,
-            'Terrestrial': """
-                Land-based terrestrial ecosystems including forests, grasslands, savannas, 
-                fynbos, shrublands, woodlands, and upland habitats. Studies of trees, 
-                vegetation structure, canopy dynamics, soil systems, and land-dwelling 
-                organisms and their interactions.
+            'Estuarine/Coastal': """
+                Estuaries, salt marshes, mangroves, submerged aquatic vegetation, coastal
+                wetlands, tidal zones, kelp forests, and semi-enclosed nearshore bays
+                (St. Helena Bay, Walker Bay, Algoa Bay). Studies of coastal biogeochemistry,
+                dissolved organic matter, blue carbon, and land-to-ocean transition zones.
+            """,
+            'Marine': """
+                Open-ocean and offshore marine ecosystems away from the immediate coast.
+                Studies of pelagic phytoplankton biogeography, ocean color, harmful algal
+                blooms in offshore waters, and open-water marine biodiversity.
             """
         },
         'taxa': {
-            'Bacteria': """
-                Bacteria and bacterial organisms. Studies of prokaryotic bacteria, bacterial 
-                diversity, microbial communities, bacterial ecology, bacterioplankton, 
-                nitrogen-fixing bacteria, decomposer bacteria, and bacterial processes in 
-                ecosystems.
+            'Plants & vegetation': """
+                Plants and vegetation of any kind: fynbos, forests, shrubs, grasses,
+                trees, wetland vegetation, salt marshes, seagrasses, submerged aquatic
+                vegetation, kelp and other marine macroalgae, invasive alien plants
+                (Pinus, Hakea, Acacia, Populus), plant functional traits, leaf
+                spectroscopy, canopy structure, phenology, and plant community biodiversity.
             """,
-            'Archaea': """
-                Archaea and archaeal organisms. Studies of archaeal diversity, extremophile 
-                archaea, methanogenic archaea, archaeal ecology, and archaeal contributions 
-                to biogeochemical cycles.
+            'Phytoplankton': """
+                Marine and freshwater phytoplankton communities, phytoplankton functional
+                types, cyanobacteria (blue-green algae), diatoms, harmful algal blooms,
+                chlorophyll and pigment retrievals, and PACE-style ocean-color science of
+                microscopic aquatic primary producers.
             """,
-            'Protozoa': """
-                Protozoa and single-celled eukaryotic organisms. Studies of protozoans, 
-                amoebae, ciliates, flagellates, parasitic protozoa, heterotrophic protists, 
-                and protozoan ecology in aquatic and terrestrial systems.
-            """,
-            'Chromista': """
-                Chromista including algae, diatoms, kelp, and related organisms. Studies of 
-                brown algae, golden algae, diatoms, seaweeds, kelp forests, algal blooms, 
-                and chromistan photosynthesis and ecology.
-            """,
-            'Plantae': """
-                Plants including true plants, mosses, ferns, and green algae. Studies of 
-                vascular plants, trees, shrubs, herbs, grasses, flowers, crops, vegetation, 
-                flora, plant diversity, botanical ecology, photosynthesis, and terrestrial 
-                plant communities.
-            """,
-            'Fungi': """
-                Fungi including mushrooms, yeasts, molds, and mycorrhizae. Studies of fungal 
-                diversity, fungal ecology, decomposer fungi, mycorrhizal associations, 
-                fungal pathogens, and fungal contributions to nutrient cycling.
-            """,
-            'Animalia': """
-                Animals including all multicellular animal life. Studies of mammals, birds, 
-                reptiles, amphibians, fish, invertebrates, insects, arthropods, mollusks, 
-                worms, wildlife, fauna, animal behavior, vertebrate and invertebrate ecology, 
-                and zoology.
+            'Vocal fauna': """
+                Birds, frogs, mammals, insects, and other sound-producing or otherwise
+                surveyed animals. BioSoundSCape studies of bioacoustics, animal richness,
+                autonomous recording units, vocalization detection, animal community
+                ecology, and soundscape–vegetation relationships.
             """
         },
         'method': {
-            'Measurement': """
-                Direct measurement, physical observation, and deterministic approaches. Studies 
-                using instruments, sensors, remote sensing, spectroscopy, field measurements, 
-                mechanical models, physics-based methods, and direct quantification of 
-                physical properties. Empirical data collection through observation and 
-                instrumentation.
+            'Field observation': """
+                Vegetation plot surveys, quadrat sampling, eDNA collection, water and
+                sediment sampling, in-water bio-optical radiometry, acoustic recording with
+                autonomous recording units, and other ground-based, in-situ data collection
+                by researchers in the field.
             """,
-            'Inferential': """
-                Statistical analysis, inferential methods, and probabilistic approaches. Studies 
-                using statistical modeling, inference, hypothesis testing, machine learning, 
-                data mining, predictive models, uncertainty quantification, and pattern 
-                recognition. Approaches focused on deriving insights from data through 
-                statistical and computational methods.
+            'Remote sensing': """
+                Airborne and satellite imaging spectroscopy (AVIRIS-NG, PRISM, HyTES, EMIT,
+                PACE, DESIS, Sentinel-2, Landsat, PlanetScope), full-waveform lidar (LVIS,
+                ELMAP), UAS multispectral imagery, thermal infrared, and derived mapping,
+                mosaicing, or index-based products from aircraft or satellite platforms.
+            """,
+            'Machine learning': """
+                Convolutional neural networks, U-Net semantic segmentation, random forests,
+                support vector machines, transfer learning, deep learning for species or
+                land-cover classification, semi-supervised learning, and other supervised
+                machine-learning pipelines applied to imagery, audio, or DNA data.
+            """,
+            'Molecular / eDNA': """
+                Environmental DNA (eDNA) metabarcoding, DNA barcoding, PCR amplification,
+                primer design, high-throughput sequencing (Illumina, Nanopore), amplicon
+                sequence variants (ASVs), molecular operational taxonomic units (mOTUs),
+                and laboratory molecular ecology workflows used to identify many species
+                from water, soil, or sediment samples.
+            """,
+            'Statistical modeling': """
+                Generalized dissimilarity models, Bayesian hierarchical models, causal
+                inference with observational data, mixed-effects regression, ecological
+                forecasting, functional-diversity metrics, species distribution models,
+                and other statistical or ecological modeling approaches.
+            """,
+            'Physics-based modeling': """
+                Radiative transfer modeling (DIRSIG, PROSPECT, 6S), atmospheric correction,
+                bio-optical inversion algorithms (MuPI, PHYDOTax), physics-based simulation
+                of remote-sensing signals, synthetic scene generation, and first-principles
+                virtual sensor experiments.
+            """,
+            'Perspective & synthesis': """
+                Review or perspective pieces, campaign overviews, project scoping, position
+                papers on open science, parachute science, FAIR data, capacity building,
+                data-portal and cloud-infrastructure descriptions, short films, and
+                workshop or training materials.
             """
         }
     }
