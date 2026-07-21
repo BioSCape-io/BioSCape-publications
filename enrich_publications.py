@@ -86,6 +86,12 @@ ITEM_COLUMNS = [
 # that predate the per-category similarity columns.
 TOPIC_DIMS = ("ecosystem", "taxa", "method")
 
+# Curated corrections for records whose semantic score alone misses their
+# substantive BioSCape topic. Keys are stable Zotero item identifiers.
+TOPIC_OVERRIDES = {
+    "BE727DXZ": {"taxa": "Plants"},
+}
+
 AUTHOR_COLUMNS = [
     "zotero_key",
     "author_position",  # 0-based ordering in authorship list
@@ -359,7 +365,7 @@ def build_item_row(
         oa_status = "no_doi"
         oa_id = ""
 
-    topics = cached_topics or {}
+    topics = apply_topic_overrides(key, cached_topics or {})
 
     row = {
         "zotero_key": key,
@@ -397,6 +403,20 @@ def cached_topics_from_row(row: dict) -> dict:
         out[f"{dim}_confidence"] = row.get(f"{dim}_confidence", "")
         out[f"{dim}_sims"] = row.get(f"{dim}_sims", "")
     return out
+
+
+def apply_topic_overrides(zotero_key: str, topics: dict) -> dict:
+    """Apply curated topic corrections while preserving incremental caches."""
+    overrides = TOPIC_OVERRIDES.get(zotero_key)
+    if not overrides:
+        return topics
+
+    corrected = dict(topics)
+    for dimension, category in overrides.items():
+        corrected[dimension] = category
+        corrected[f"{dimension}_confidence"] = 1.0
+        corrected[f"{dimension}_sims"] = json.dumps({category: 1.0})
+    return corrected
 
 
 def _needs_openalex_refresh(cached: dict | None, item: dict) -> bool:

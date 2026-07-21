@@ -68,7 +68,7 @@ TOPIC_CATEGORIES = {
         'Marine',
     ],
     'taxa': [
-        'Plants & vegetation',
+        'Plants',
         'Phytoplankton',
         'Vocal fauna',
     ],
@@ -85,7 +85,7 @@ TOPIC_CATEGORIES = {
 
 TOPIC_COLUMNS = [
     ('Ecosystem', 'ecosystem'),
-    ('Taxa', 'taxa'),
+    # ('Taxa', 'taxa'),
     ('Method', 'method'),
 ]
 

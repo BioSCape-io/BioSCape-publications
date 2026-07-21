@@ -149,8 +149,8 @@ def classify_documents_by_semantic_similarity(df):
             """
         },
         'taxa': {
-            'Plants & vegetation': """
-                Plants and vegetation of any kind: fynbos, forests, shrubs, grasses,
+            'Plants': """
+                Plants of any kind: fynbos, forests, shrubs, grasses,
                 trees, wetland vegetation, salt marshes, seagrasses, submerged aquatic
                 vegetation, kelp and other marine macroalgae, invasive alien plants
                 (Pinus, Hakea, Acacia, Populus), plant functional traits, leaf

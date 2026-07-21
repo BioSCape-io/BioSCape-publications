@@ -51,7 +51,7 @@ const TOPIC_COLORS = {
         'Marine': '#0077b6'
     },
     taxa: {
-        'Plants & vegetation': '#386641',
+        'Plants': '#386641',
         'Phytoplankton': '#0096c7',
         'Vocal fauna': '#ae5c1c'
     },

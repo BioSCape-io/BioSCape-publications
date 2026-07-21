@@ -52,6 +52,7 @@
             </div>
         </div>
 
+        <!--
         <div class="stats-chart-block stats-full-width">
             <h6>Authorships by role &mdash; US, South Africa, rest of world</h6>
             <p class="chart-note">
@@ -62,11 +63,12 @@
             </p>
             <canvas id="rolesByGroupChart"></canvas>
         </div>
+        -->
 
 
         <h6 class="stats-topics-title">Topics represented across BioSCape outputs</h6>
         <p class="chart-subtitle">
-            Each item with an abstract is classified across three dimensions using
+            Each item with an abstract is classified across multiple dimensions using
             semantic similarity. The donuts below show the primary category per item,
             so slice totals equal the number of classified items. The table cells may
             display more than one badge when a paper strongly matches multiple categories
@@ -77,10 +79,12 @@
                 <div class="topic-title">Ecosystem</div>
                 <canvas id="ecosystemChart"></canvas>
             </div>
+            <!--
             <div class="stats-topic-block">
                 <div class="topic-title">Taxa</div>
                 <canvas id="taxaChart"></canvas>
             </div>
+            -->
             <div class="stats-topic-block">
                 <div class="topic-title">Method</div>
                 <canvas id="methodChart"></canvas>
@@ -97,7 +101,7 @@
         </div>
     </div>
     <p class="table-disclaimer">
-        <strong>Note:</strong> the <em>Ecosystem</em>, <em>Taxa</em>, and <em>Method</em> tags
+        <strong>Note:</strong> the <em>Ecosystem</em> and <em>Method</em> tags
         were generated automatically from titles and abstracts using a semantic-similarity
         classifier and may contain errors. Please refer to each publication for authoritative
         details.
